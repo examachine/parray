@@ -1,0 +1,88 @@
+//
+//
+// C++ Interface for module: Array_Expression
+//
+// Description: 
+//
+//
+// Author: exa
+//
+//
+
+#ifndef Array_Expression_Interface
+#define Array_Expression_Interface
+
+#include "General.hxx"
+
+namespace Parallel_Arrays {
+  
+  // included before array
+
+  // A plain unary expression, but since it can
+  // query lvalue, it can perform assignments
+  template <typename _Array>
+  class Array_Reference_Expression
+    : public Unary_Ref_Expression<_Array>
+  {
+  public:
+    typedef _Array Array;
+    typedef Array & Reference;
+    typedef Unary_Ref_Expression< Array > Base;
+    typedef Array_Reference_Expression<Array> Ref_Expr;
+
+    typedef typename Array::Component Component;
+
+    Array_Reference_Expression() {}
+
+    Array_Reference_Expression(Reference ref) : Base(ref) {
+    }
+
+    // Assignment to another array
+    Ref_Expr &operator =(const Ref_Expr &rhs_expr) {
+    
+      Reference lvalue = sel_object();
+      const Reference rvalue = rhs_expr.sel_object();
+
+      nlog << node_str << "Array " << &lvalue << " := "
+	   << " Array " << &rvalue << endl;
+
+      rvalue.cons_binary_function_map(Assign<Array,Array>(),lvalue).apply();
+      
+      return *this;
+    }
+
+    // Assignment to an object
+//     Ref_Expr& operator =(Object rhs)
+//     {
+//       Reference ref = object;
+//       nlog << node_str << ref << " := " << rhs << endl;
+//       if (ref.local)
+// 	*object.local_object = rhs;
+//       return *this;
+//     }
+
+    // Dereference operators
+    Reference operator*() {
+      return sel_object();
+    }
+    Reference operator->() {
+      return sel_object();
+    }
+
+    // Conversion operator
+    //   operator Object() {
+    //     Reference & ref = object;
+    //     nlog << node_str << ref << " -<type>-> " << typeid(Object).name() << endl;
+
+    //     nlog << node_str << "broadcasting!" << endl;
+    //     Object obj;
+    //     ref.broadcast(&obj);
+    //     return obj;
+    //   }
+
+  };
+
+} // end namespace
+
+#endif
+

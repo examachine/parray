@@ -1,0 +1,29 @@
+//
+//
+// C++ Implementation for module: Expression_Operators
+//
+// Description: 
+//
+//
+// Author: exa
+//
+//
+
+#include "Expression_Operators.hxx"
+
+template <typename _Expr, typename RHS_Gen_Expr>
+Gen_Expr< Array_Add_Expression<Expression,
+  typename RHS_Gen_Expr::Expression> >
+operator+ (const RHS_Gen_Expr& gen_right);
+{
+  typedef typename RHS_Gen_Expr::Expression RHS;
+  typedef Array_Add_Expression<Expression, RHS> Add_Expression;
+  typedef Gen_Expr<Add_Expression> Gen_Add;
+  
+  const RHS & right = gen_right.expression;
+  
+  nlog << node_str << *this << " + " << right << endl;
+  Gen_Add return_expr(Add_Expression(expression, right));
+  nlog << "return_expr: " << return_expr << endl;
+  return return_expr;
+}

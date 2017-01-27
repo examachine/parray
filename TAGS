@@ -1,0 +1,277 @@
+
+src/Application.cxx,38
+void main(20,260
+void test(118,2373
+
+src/Log.cxx,124
+ostream & nlog 18,145
+nlog_t nlog;22,176
+ostream & nlog_t::null_stream 24,190
+ostream & nerr 30,251
+nerr_t nerr;34,282
+
+src/Utility.cxx,34
+namespace Utility Utility14,126
+
+src/Parallel_Arrays.cxx,181
+  void initialize(18,205
+  void finalize(29,510
+  int num_processors;33,595
+  int processor_id;34,617
+  string node_str;35,637
+  istream & pin 37,657
+  ostream & pout 38,680
+
+src/General.hxx,124
+#define General_Interface12,81
+#define begin_namespace(begin_namespace34,376
+#define end_namespace(end_namespace36,404
+
+src/ANSI_Library.hxx,0
+
+src/Log.hxx,421
+#define Log_Interface13,109
+extern ostream & nlog;17,182
+struct nlog_t nlog_t23,354
+  nlog_t(nlog_t::nlog_t24,370
+  nlog_t(nlog_t::nlog_t25,384
+  operator ostream nlog_t::operator ostream26,410
+nlog_t & operator 31,511
+nlog_t & operator 36,595
+extern nlog_t nlog;40,655
+extern ostream & nerr;45,697
+struct nerr_t nerr_t47,726
+nerr_t & operator 50,763
+nerr_t & operator 55,847
+extern nerr_t nerr;59,907
+
+src/Utility.hxx,903
+#define Utility_Interface13,117
+namespace Utility Utility17,168
+  class Exception Exception22,226
+    Exception(Exception::Exception24,275
+    const string why(Exception::why25,317
+    const char *what(Exception::what28,411
+  inline ostream& operator 33,497
+  class CPU_Time CPU_Time51,1026
+    CPU_Time(CPU_Time::CPU_Time53,1055
+    CPU_Time(CPU_Time::CPU_Time54,1112
+    CPU_Time operator -(CPU_Time::operator -57,1243
+    ostream& print(CPU_Time::print60,1345
+  inline ostream& operator 68,1512
+  class Counter Counter73,1626
+    Counter(Counter::Counter75,1654
+    int operator(Counter::operator76,1690
+    int check(Counter::check77,1731
+  class Rand Rand83,1829
+    static void init(Rand::init85,1854
+    static double rand_double Rand::rand_double90,1948
+    static int rand_int Rand::rand_int94,2063
+  template <typename A,108,2360
+    operator<109,2405
+
+src/Parallel_Arrays.hxx,222
+#define Parallel_Arrays_Interface13,133
+extern int num_processors;23,295
+extern int processor_id;24,322
+static inline bool root_processor(25,347
+static inline bool last_processor(28,415
+extern string node_str;32,499
+
+src/Interval.hxx,238
+#define Interval_Interface13,119
+template <typename _Number,20,232
+class Interval Interval21,278
+  Interval(Interval28,420
+template <typename Number,88,1606
+ostream& operator<89,1641
+typedef Interval<int, 1> Range;Range106,1969
+
+src/Array.hxx,707
+#define Array_Interface13,113
+template <typename C,30,468
+template <typename C, int _dimensions 30,468
+class ArrayArray32,550
+  Map cons_map(cons_map97,1975
+template <typename C,371,8579
+template <typename C, int d,371,8579
+struct Object_Traits<Array<C,372,8618
+struct Object_Traits<Array<C,d,372,8618
+  typedef typename Array<C,d,SC>::Reference Expression;Expression374,8657
+  typedef typename Array<C,d,SC>::Const_Reference Const_Expression;Const_Expression375,8713
+  typedef Gen_Expr<Expression> Generic_Expression;Generic_Expression376,8781
+  static Expression reference378,8833
+  static Const_Expression const_reference383,8917
+  static Generic_Expression generic_reference388,9025
+
+src/Storage.hxx,101
+#define Storage_Interface13,117
+template <typename C,20,234
+class Storage_BaseStorage_Base21,273
+
+src/Algorithms.hxx,172
+#define Algorithms_Interface13,123
+begin_namespace(17,177
+typename Array::Component sum(32,543
+template <typename Array,42,743
+typename Array::Component reduce(43,790
+
+src/Storage_Classes.hxx,159
+#define Storage_Classes_Interface13,133
+class Linear_Storage_ClassLinear_Storage_Class33,526
+class Block_Partitioning_ClassBlock_Partitioning_Class43,706
+
+src/Block_Partitioning.hxx,174
+#define Block_Partitioning_Interface13,139
+template <typename C,22,285
+class Block_Partitioning Block_Partitioning23,324
+  Block_Partitioning(Block_Partitioning65,1037
+
+src/Partition.hxx,113
+#define Partition_Interface13,121
+class Block_PartitionBlock_Partition24,356
+  void operator(operator31,522
+
+src/Linear_Storage.hxx,149
+#define Linear_Storage_Interface13,131
+begin_namespace(17,189
+class Linear_Storage Linear_Storage22,373
+  Linear_Storage(Linear_Storage64,1078
+
+src/Expression.hxx,1762
+#define Expression_Interface13,123
+template<typename A,21,260
+template<typename A,24,322
+template<typename A,27,384
+template<typename C,33,496
+template<typename C, int d,33,496
+struct Object_TraitsObject_Traits45,735
+class Abstract_ExpressionAbstract_Expression55,983
+  Abstract_Expression(Abstract_Expression::Abstract_Expression58,1019
+private:Abstract_Expression::private59,1046
+class Gen_ExprGen_Expr74,1588
+  Gen_Expr(Gen_Expr84,1779
+  typedef Expr Expression;Expression184,4809
+  static Expr generic_reference(185,4836
+inline ostream& operator 192,4960
+class Unary_Expression Unary_Expression199,5152
+  Unary_Expression(Unary_Expression205,5288
+class Unary_Ref_Expression Unary_Ref_Expression228,5739
+  Unary_Ref_Expression(Unary_Ref_Expression234,5883
+ostream& operator 263,6475
+template <typename _Object1,268,6636
+class Binary_Expression Binary_Expression269,6684
+  Binary_Expression(Binary_Expression275,6806
+template <typename O1,311,7518
+ostream& operator 312,7554
+template <typename _Object1,317,7728
+class Binary_Ref_Expression Binary_Ref_Expression318,7776
+  Binary_Ref_Expression(Binary_Ref_Expression324,7902
+template <typename O1,360,8626
+ostream& operator 361,8662
+class Constant_Expression Constant_Expression369,8961
+  Constant_Expression(Constant_Expression::Constant_Expression372,9042
+ostream& operator 378,9157
+class Reference_Expression Reference_Expression385,9404
+  Reference_Expression(Reference_Expression::Reference_Expression388,9480
+  Reference_Expression<Object>& operator =(Reference_Expression::operator =392,9588
+  Object & operator*(Reference_Expression::operator*399,9737
+  Object & operator->(Reference_Expression::operator->402,9789
+ostream& operator 409,9869
+
+src/Messages.hxx,446
+#define Messages_Interface13,119
+  enum Message_Tags Message_Tags19,206
+  enum Message_Tags { load_tag,19,206
+  enum Message_Tags { load_tag, store_tag,19,206
+  enum Message_Tags { load_tag, store_tag, obj_single_tag,19,206
+  enum Message_Tags { load_tag, store_tag, obj_single_tag, obj_array_tag 19,206
+  struct MPI_Type MPI_Type22,307
+    static const MPI::Datatype & datatype 27,375
+    static const MPI::Datatype & datatype 32,490
+
+src/Array_IO.hxx,714
+#define Array_IO_Interface13,119
+  extern istream & pin;19,206
+  extern ostream & pout;20,230
+  const static int buffer_size 22,256
+  template <typename C,24,293
+  template <typename C, int d,24,293
+  class Array<C,25,337
+  class Array<C,d,25,337
+  template <typename C,100,2393
+  template <typename C, int d,100,2393
+  istream& operator 101,2437
+  template <typename C,130,3212
+  template <typename C, int d,130,3212
+  class Array<C,131,3256
+  class Array<C,d,131,3256
+  template <typename C,231,6176
+  template <typename C, int d,231,6176
+  ostream& operator 232,6220
+  template <typename C,259,6929
+  ostream& operator 260,6960
+  template <typename C,277,7377
+  ostream& operator 278,7408
+
+src/Array_Expression.hxx,795
+#define Array_Expression_Interface13,135
+class Array_Reference_ExpressionArray_Reference_Expression41,813
+  Array_Reference_Expression(Array_Reference_Expression54,1232
+template <typename _Expr1,143,3225
+class Array_Add_ExpressionArray_Add_Expression144,3269
+  Array_Add_Expression(Array_Add_Expression157,3600
+template <typename O1,185,4012
+ostream& operator 186,4048
+template <typename _Expr1,194,4259
+class Array_Sub_ExpressionArray_Sub_Expression195,4303
+  Array_Sub_Expression(Array_Sub_Expression208,4634
+template <typename O1,236,5046
+ostream& operator 237,5082
+template <typename _Expr1,243,5291
+class Array_Mul_ExpressionArray_Mul_Expression244,5335
+  Array_Mul_Expression(Array_Mul_Expression257,5666
+template <typename O1,285,6078
+ostream& operator 286,6114
+
+src/Component_Reference.hxx,594
+#define Component_Reference_Interface13,141
+class NUMA_Reference NUMA_Reference20,263
+  NUMA_Reference(NUMA_Reference::NUMA_Reference22,294
+  NUMA_Reference(NUMA_Reference::NUMA_Reference24,317
+  NUMA_Reference(NUMA_Reference::NUMA_Reference27,394
+  void broadcast(NUMA_Reference::broadcast32,591
+  void send(NUMA_Reference::send46,889
+  void receive(NUMA_Reference::receive52,1100
+  void get(NUMA_Reference::get60,1335
+ostream& operator 81,1744
+class NUMA_Reference_ExpressionNUMA_Reference_Expression96,2150
+  NUMA_Reference_Expression(NUMA_Reference_Expression105,2469
+
+src/Functions.hxx,359
+#define Functions_Interface13,121
+template <typename _Arg1,20,210
+template <typename _Arg1, typename _Arg2,20,210
+class Binary_Function Binary_Function21,270
+  Binary_Function(Binary_Function27,373
+template <typename _LValue,37,525
+class Assign Assign38,571
+  Assign(Assign41,701
+class Add Add49,882
+  const static MPI::Op mpi_op(mpi_op52,979
+
+src/Array_Operators.hxx,41
+#define Array_Operators_Interface13,133
+
+src/Expression_Operators.cxx,276
+Gen_Expr< Array_Add_Expression<_Expression,15,214
+Gen_Expr<_Expression>::operator+17,312
+Gen_Expr< Array_Sub_Expression<_Expression,33,909
+Gen_Expr<_Expression>::operator-35,1007
+Gen_Expr< Array_Mul_Expression<_Expression,51,1604
+Gen_Expr<_Expression>::operator*53,1702
+
+Makefile,49
+SHELL 7,35
+dirname 22,311
+OUTPUTFLAG 139,3186

@@ -1,0 +1,211 @@
+//
+//
+// C++ Interface for module: Expression
+//
+// Description: 
+//
+//
+// Author: exa
+//
+//
+
+#ifndef Expression_Interface
+#define Expression_Interface
+
+#include "General.hxx"
+#include "Functions.hxx"
+
+// namespace Parallel_Arrays {
+
+// Abstract Expression class
+// put common expression functionality here
+class Abstract_Expression
+{
+public:
+  Abstract_Expression() {}
+private:
+};
+
+inline ostream& operator << (ostream& out, const Abstract_Expression& expr) {
+  out << "Abstract Expression instance " << typeid(expr).name() << endl;
+}
+
+// Generic expression
+// Adapts expressions to maintain type compatibility
+// Nice way to designate an expression object
+// This is needed because we can't ask for type compatibility
+// when specifying a template parameter, otherwise we could
+// simply ask for subclasses of Abstract_Expression
+// Generic_Expression is *not* a subclass of Abstract_Expression
+template <class Expression>
+class Gen_Expr
+{
+public:
+  typedef Gen_Expr<Expression> Self;
+
+  explicit Gen_Expr(Expression e) : expr(e) {
+  }
+
+  Gen_Expr(const Self & x) : expr(x.expr) {
+//     nlog << "gen_expr : copy cons" /* <<  expr*/ << endl;     
+
+  }
+
+  Gen_Expr& operator =(const Self & x) {
+//     nlog << "gen_expr : memberwise assignment" /*<<  expr*/ << endl;     
+
+    // delegate initialization
+    expr = x. expr;
+    return *this;
+  }
+
+  Expression & operator*() {
+    return expr;
+  }
+  Expression & operator->() {
+    return expr;
+  }
+
+  // assignment to expression
+  template <typename RHS_Expression>
+  Gen_Expr& operator =(Gen_Expr<RHS_Expression> rhs_expr) {
+    // delegate assignment to <sub>class
+    nlog << "gen_expr : assignment" << *this << ", " << rhs_expr << endl;
+    nlog << "NOT IMPLEMENTED " << endl;
+    //expr = rhs;
+  }
+
+  // assignment to non-expression object
+  template <typename Object>
+  Gen_Expr& operator =(Object rhs ) {
+    // delegate assignment to <sub>class
+//     nlog << "gen_expr : assignment" << *this << ", " << rhs << endl;
+    expr = rhs;
+  }
+
+  // conversion operator
+  template <typename Object>
+  operator Object() {
+    // delegate conversion to <sub>class
+    return Object(expr);
+  }
+
+  Expression expr;
+
+};
+
+
+template <typename Expression>
+inline ostream& operator << (ostream& out,
+			     const Gen_Expr<Expression>& expr) {
+  out << "Gen_Expr[" << expr.expr << "]" << endl;
+}
+
+// Unary Expression class
+template <typename _Object>
+class Unary_Expression : public Abstract_Expression
+{
+public:
+  typedef _Object Object;
+  typedef Unary_Expression<Object> Expression;
+
+  Unary_Expression() {}
+  Unary_Expression(Object &o) : object(o) {}
+
+//   Expression& operator=(const Expression& expr) {
+//     nlog << "Unary_Expression assignment " << expr << endl;
+//     object = expr.object;
+//     return *this;
+//   }
+
+  Object & sel_object() {
+    return object;
+  }
+
+  Object  object;
+private:
+};
+
+// Unary Reference Expression class
+template <typename _Object>
+class Unary_Ref_Expression : public Abstract_Expression
+{
+public:
+  typedef _Object Object;
+  typedef Unary_Ref_Expression<Object> Expression;
+
+  Unary_Ref_Expression(Object &o) : object(o) {}
+
+//   Expression& operator=(const Expression& expr) {
+//     nlog << "Unary_Expression assignment " << expr << endl;
+//     object = expr.object;
+//     return *this;
+//   }
+
+//   const Object & sel_object() const {
+//     return object;
+//   }
+
+  Object & sel_object() const{
+    return object;
+  }
+
+  Object & object;
+private:
+};
+
+template <typename O>
+ostream& operator << (ostream& out, const Unary_Ref_Expression<O>& expr) {
+  out << "Unary_Ref_Expression[" << expr.object << "]" << endl;
+}
+
+// An expression that adapts a constant value
+// And a constant can be safely referenced
+template <typename _Object>
+class Constant_Expression : public Unary_Ref_Expression<const _Object>
+{
+public:
+  Constant_Expression(const Object & o) :
+    Unary_Ref_Expression<const _Object>(o) {}
+
+};
+
+template <typename O>
+ostream& operator << (ostream& out, const Constant_Expression<O>& expr) {
+  out << "Constant[" << expr.object << "]" << endl;
+}
+
+// A plain unary expression, but since it can
+// query lvalue, it can perform assignments
+template <typename _Object>
+class Reference_Expression : public Unary_Ref_Expression<_Object>
+{
+public:
+  Reference_Expression(_Object & o) :
+    Unary_Ref_Expression<_Object>(o) {}
+
+  // Assignment to an object
+  Reference_Expression<Object>& operator =(Object rhs)
+  {
+    nlog << &object << " := " << rhs << endl;
+    object = rhs;
+    return *this;
+  }
+
+  Object & operator*() {
+    return sel_object;
+  }
+  Object & operator->() {
+    return sel_object;
+  }
+
+};
+
+template <typename O>
+ostream& operator << (ostream& out, const Reference_Expression<O>& expr) {
+  out << "Reference[" << expr.object_ptr << "]" << endl;
+}
+
+// } // namespace end
+
+#endif

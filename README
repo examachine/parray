@@ -1,0 +1,21 @@
+Parallel_Arrays is a C++ class library for data-parallel arrays in C++.
+The parallelization is achieved through MPI-2 calls. The focus
+of the library is data-parallel array computation reminiscient
+of HPF directly in C++ syntax.
+
+The library also functions as a sequential array library similar
+in design to Blitz++ and Pooma. The array expressions are handled
+using expression templates, which is used to avoid temporaries.
+The library supports fundamental element-wise and reduction
+operations, as well as a simple array I/O facility. The library
+internally uses parallel iterator classes to define array-scale
+operations and generic functions use these iterators to achieve
+decoupling of container and algorithm modules as in standard C++
+library.
+
+Data distribution is specified directly by user, and simple
+distribution schemes are already present in the library. All messaging
+is hidden from the user, as the library aims at comprehensible
+syntax.
+
+

@@ -1,0 +1,43 @@
+//
+//
+// C++ Interface for module: Algorithms
+//
+// Description: 
+//
+//
+// Author: exa
+//
+//
+
+#ifndef Algorithms_Interface
+#define Algorithms_Interface
+
+#include "General.hxx"
+
+namespace Parallel_Arrays {
+
+template <typename Array>
+void fill(Array & array, typename Array::Component x)
+{
+  typename Array::Traversal t(array);
+  for (; t.in(); t.next()) {
+//     nlog << node_str << "fill: " << t.refer() << " <- " << x << endl;
+    t.refer() = x;
+  }
+}
+
+template <typename Array>
+typename Array::Component sum(const Array & array)
+{
+  typename Array::Component sum = 0;
+  typename Array::Traversal t(array);
+  for (; t.in(); t.next()) {
+//     nlog << node_str << "fill: " << t.refer() << " <- " << x << endl;
+    sum += t.refer();
+  }
+  return sum;
+}
+
+} // namespace end
+
+#endif

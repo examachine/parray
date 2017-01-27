@@ -1,0 +1,285 @@
+//
+//
+// C++ Interface for module: Array
+//
+// Description: 
+//
+//
+// Author: exa
+//
+//
+
+#ifndef Array_Interface
+#define Array_Interface
+
+#include "General.hxx"
+
+#include "Interval.hxx"
+#include "Storage.hxx"
+#include "Expression.hxx"
+#include "Component_Reference.hxx"
+#include "Array_Expression.hxx"
+
+namespace Parallel_Arrays {
+
+  class Linear_Storage_Class;
+
+  // General purpose array class
+  // Supports 1 and 2 dimensional arrays
+  template <typename C, int _dimensions = 1,
+    typename SC = Linear_Storage_Class >
+  class Array
+  {
+  public:
+    typedef C Component;
+    static const int dimensions = _dimensions;
+    typedef SC Storage_Class;
+    typedef typename Storage_Class::Traits<C, _dimensions>::Storage Storage;
+    typedef int Index;
+    //typedef Range
+    typedef Array<Component, dimensions, Storage_Class> Self;
+    typedef Array<Component, dimensions, Storage_Class> _Array;
+  
+    // Traversal type
+    friend class Traversal;
+    class Traversal
+    {
+    public:
+      typedef Self Base;
+      //   typedef typename Base::Component Component;
+      typedef typename Base::Storage::Iterator Iterator;
+
+      Traversal(Base& c)
+	: container(c)
+      {
+	iter = container.storage.begin();
+	iter_end = container.storage.end();
+      }
+
+      void next() {
+	I(iter <= iter_end);
+	iter.next();
+      }
+
+      bool in() {
+	return iter <= iter_end;
+      }
+
+      Component & refer() {
+	return iter.refer();
+      }
+
+    private:
+      Base & container;
+      Iterator iter;
+      Iterator iter_end;
+    };
+
+    template <class _Function>
+    class Function_Map : Traversal {
+    public:
+      typedef _Function Function;
+//       typedef typename Function::Return Return;
+
+      Function_Map(Base & c) : Traversal(c) {}
+
+      void apply() {
+	for (; in(); next()) {
+	  f(refer());
+	}
+      }
+
+      // apply
+      void operator() () {
+	apply();
+      }
+
+    private:
+      Function f;
+    };
+
+    template <class Function>
+    Function_Map<Function> cons_function_map() {
+      return Function_Map<Function>(*this);
+    }
+
+    template <class _Function>
+    class Binary_Function_Map  {
+    public:
+      typedef _Function Function;
+      typedef Self Base;
+//       typedef typename Function::Return Return;
+
+      Binary_Function_Map(Base &l, Base &r) : left(l), right(r) {
+	// Assert that both have the same size
+	I(l.size()==r.size());
+      }
+
+      void apply() {
+	for (; left.in() /*&& right.in()*/; left.next(),right.next()) {
+	  f(left.refer(), right.refer());
+	}
+      }
+
+      // apply
+      void operator() () {
+	apply();
+      }
+
+    private:
+      Function f;
+      Traversal left;
+      Traversal right;
+    };
+
+    template <class Function>
+    Binary_Function_Map<Function> cons_binary_function_map(Function func,
+							   Self& another) {
+      return Binary_Function_Map<Function>(*this, another);
+    }
+
+    friend class Loader;
+    class Loader;
+
+    Loader cons_loader() const {
+      return Loader(this);
+    }
+
+    friend class Storer;
+    class Storer;
+
+    Storer cons_storer() const {
+      return Storer(this);
+    }
+
+    Array(int size)
+      : range(0,size-1), // C Style arrays by default
+      storage(range)
+    {
+      storage.allocate();
+    }
+
+    Array(int size, const Component& value)
+      : range(0,size-1),  // C Style arrays by default
+      storage(range)
+    {
+      storage.allocate(num_components);
+      for (int i = 0; i < size; i++) {
+	mod_component(i, value);
+      }
+    }
+
+    Array(const Component * c_array, int size )
+      : range(0, size-1),
+	storage(range)
+    {
+      storage.allocate();
+      for (int i = 0; i < size; i++) {
+	mod_component(i, c_array[i]);
+      }
+    }
+
+    ~Array() {
+      storage.free();
+    }
+
+    // component selector/modifier
+    // no bounds checking
+    // not supported...
+
+    const Component & sel_component(Index index) const {
+      return storage.ref_component(index);
+    }
+
+    const Component & scomp(Index index) const {
+      return storage.ref_component(index);
+    }
+
+    void mod_component(Index index, const Component & value) {
+      storage.mod_component(index, value);
+    }
+
+    void mcomp(Index index, const Component & value) {
+      storage.mod_component(index, value);
+    }
+
+    Component & ref_component(Index index) {
+      return storage.ref_component(index);
+    }
+
+    Component & comp(Index index) const {
+      return storage.comp(index);
+    }
+
+    Index first() const {
+      return range.sel_first();
+    }
+
+    Index last() const {
+      return range.sel_last();
+    }
+
+    int size() const {
+      return storage.sel_num_components();
+    }
+
+    const Storage & sel_storage() const {
+      return storage;
+    }
+
+//     Component & operator[] (Index index) {
+//       return storage.ref_component(index);
+//     }
+
+//     typedef NUMA_Reference_Expression<Component> Comp_Ref;
+
+    // subscripting operators / component access
+
+    typedef NUMA_Reference<Component> Comp_Ref;
+    typedef NUMA_Reference_Expression<Component> Comp_Ref_Expr;
+    Gen_Expr<Comp_Ref_Expr> operator[] (Index index) {
+      return Gen_Expr<Comp_Ref_Expr>( Comp_Ref_Expr(storage.reference(index)) );
+    }
+
+    // assignment operators
+
+//     typedef Array_Reference<Component> Array_Ref;
+    typedef Array_Reference_Expression<_Array> Array_Ref_Expr;
+    typedef Array_Reference_Expression<const _Array> Const_Array_Ref_Expr;
+
+//     Gen_Expr<Const_Array_Ref_Expr> operator = (const _Array & array) {
+//       nlog << "array assignment " << endl;
+//       return Gen_Expr<Const_Array_Ref_Expr>( Const_Array_Ref_Expr(array) );
+//     }
+
+    Self& operator =(const _Array & rvalue) {
+//       nlog << "array assignment " << endl;
+      Gen_Expr<Array_Ref_Expr> lvalue(Array_Ref_Expr(*this));
+      lvalue = rvalue;
+      return *this;
+    }
+
+    operator Gen_Expr<Array_Ref_Expr>() {
+      nlog << "converting array to expr " << endl;
+      return Gen_Expr<Array_Ref_Expr>(array);
+    }
+
+//     Self& operator = (const Gen_Expr<Const_Array_Ref_Expr>& rvalue) {
+//       nlog << "array assignment " << endl;
+      
+//     }
+    
+  protected:
+
+  private:
+    Range range;
+    Storage storage;
+  };
+
+
+
+} // namespace end
+
+#endif
+
+

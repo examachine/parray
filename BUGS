@@ -1,0 +1,4 @@
+
+lam bugs:
+
+ * MPI::Is_finalized() - not implemented

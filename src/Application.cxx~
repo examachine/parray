@@ -1,0 +1,124 @@
+//
+//
+// C++ Implementation file for application
+//
+// Description: includes the main(...) function
+//
+// exa
+//
+//
+
+#include "General.hxx"
+
+#include "Parallel_Arrays.hxx"
+
+// using namespace std;
+using namespace Utility;
+
+// using namespace Parallel_Arrays;
+
+void main(int argc, char *argv[])
+{
+  try {
+    MPI::Init();
+    //    Parallel_Arrays::initialize();	
+    initialize();
+
+    MPIL_Trace_on();
+
+    Array<double, 1, Block_Partitioning_Class> a(7), b(7), c(7), d(7);
+    if (root_processor())
+      cout << "array<double> with size " << a.size() << endl; 
+
+    fill(a, -1);
+
+    a[0] = 3;
+    a[5] = 4; // previous from the last
+
+    double x = a[0];
+    nlog << node_str << "a[0] = " << x << endl;
+
+    a[2] = a[0];
+    a[4] = a[0];
+
+//     nlog << node_str << array.sel_storage() << endl;
+    if (root_processor())
+      cout << "a ";
+    cout << a;
+
+    b = a;
+    b = b + a * a;
+    c = b - a;
+    d = a * b;
+
+    if (root_processor())
+      cout << "\nb ";
+    cout << b;
+
+    if (root_processor())
+      cout << "\nc ";
+    cout << c;
+
+    if (root_processor())
+      cout << "\nd ";
+    cout << d;
+
+    if (root_processor())
+      cout << endl;
+
+    int c_array[] = {0,1,2,3};
+    typedef Array<int, 1, Block_Partitioning_Class> MyArray;
+    MyArray array2(c_array, 4);
+    if (root_processor())
+      cout << "array2 ";
+    cout << array2;
+    if (root_processor())
+      cout << endl;
+    int s = reduce< MyArray, Add<int>  >(array2);
+    if (root_processor())
+      cout << "sum of components is " << s << endl;
+    
+    if (root_processor())
+      cout << "sqr of each component ";
+    MyArray::Traversal t(array2);
+    MyArray sqr(4);
+    MyArray::Traversal sqr_t(sqr);
+    for (; t.in(); t.next(),sqr_t.next()) {
+      sqr_t.refer() =  t.refer() * t.refer();
+    }
+    cout << sqr;
+    if (root_processor())
+      cout << endl;
+
+    char array_str[] = " 1 2 3 4 5 6 7 8 9 10 ";
+    istrstream i_array(array_str, 21);
+    Array<double, 1, Block_Partitioning_Class> array3(10);
+    i_array >> array3;
+
+    array3[2] = array3[0];
+    array3[6] = array3[1];
+
+    cout << array3;
+
+//     Parallel_Arrays::finalize();
+    finalize();
+    MPI::Finalize();
+  }
+  catch (exception e) {
+    cerr << "C++ Exception :" << e.what() << endl; 
+  }
+  catch (Exception e) {
+    cerr << e;
+  }
+  catch (MPI::Exception e) {
+    cerr << "MPI Error caught" << endl;
+  }
+}
+
+void test() {
+    Interval<int, 1> interval(3, 8);
+//     cout << interval << endl;
+}
+
+
+
